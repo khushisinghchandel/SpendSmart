@@ -1,122 +1,49 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import heroImg from './assets/hero.png'
-import './App.css'
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import SpendForm from './components/form/SpendForm.jsx';
+import ResultsDashboard from './components/dashboard/ResultDashboard.jsx';
 
 function App() {
-  const [count, setCount] = useState(0)
-
   return (
-    <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
-        </div>
-        <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.jsx</code> and save to test <code>HMR</code>
-          </p>
-        </div>
-        <button
-          type="button"
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
-        >
-          Count is {count}
-        </button>
-      </section>
+    <BrowserRouter>
+      <div className="min-h-screen bg-slate-900 text-slate-50 font-sans selection:bg-emerald-500/30">
+        
+       
+        <header className="border-b border-slate-800 bg-slate-900/50 sticky top-0 z-10 backdrop-blur-md">
+          <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
+            <div className="flex items-center gap-2 cursor-pointer" onClick={() => window.location.href = '/'}>
+              <div className="w-8 h-8 bg-emerald-500 rounded-lg flex items-center justify-center font-bold text-lg text-slate-900">
+                $
+              </div>
+              <span className="text-xl font-bold tracking-tight">SpendSmart</span>
+            </div>
+          </div>
+        </header>
 
-      <div className="ticks"></div>
+        <main className="max-w-6xl mx-auto px-6 py-12">
+          <Routes>
+            
+            <Route path="/" element={
+              <>
+                <div className="mb-10 text-center max-w-2xl mx-auto animate-in fade-in slide-in-from-bottom-4 duration-500">
+                  <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight mb-4">
+                    Stop overpaying for AI.
+                  </h1>
+                  <p className="text-lg text-slate-400">
+                    Enter your current AI tool stack below. Our engine will instantly calculate where you are overspending and recommend exact alternatives.
+                  </p>
+                </div>
+                <SpendForm />
+              </>
+            } />
 
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
-        </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
-      </section>
+           
+            <Route path="/dashboard" element={<ResultsDashboard />} />
+          </Routes>
+        </main>
 
-      <div className="ticks"></div>
-      <section id="spacer"></section>
-    </>
-  )
+      </div>
+    </BrowserRouter>
+  );
 }
 
-export default App
+export default App;
