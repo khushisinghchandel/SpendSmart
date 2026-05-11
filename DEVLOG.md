@@ -22,3 +22,41 @@
 **Blockers / what I'm stuck on:** The math engine currently only evaluates individual tools. It needs to be smarter and evaluate the stack holistically (e.g., finding overlapping/duplicate tool capabilities).
 
 **Plan for tomorrow:** Expand the `runAudit` engine to detect duplicate tools, and integrate the Anthropic API to generate a personalized executive summary based on the audit results.
+
+## Day 3 (2026-05-11)
+
+**Hours worked:** 5
+
+**What I did:** Massive day focused on backend integration, API wiring, and "wow factor" features. 
+1.  **PDF Export (Bonus Feature):** Engineered a client-side PDF export for the Results Dashboard using `html-to-image` and `jspdf`.
+2.  **Persistence (MVP 1):** Implemented `localStorage` syncing so the user's stack data survives page reloads.
+3.  **AI Summary (MVP 4):** Integrated the Groq API (LLaMA 3 8B) to generate a personalized executive summary of the wasted spend. Wrote strict fallback logic to render a templated summary if the API times out or rate-limits, ensuring 100% UI uptime. Documented the system prompt in `PROMPTS.md`.
+4.  **Lead Capture & Backend (MVP 5):** Replaced the instant-audit button with an "Email Gate" modal. Spun up a Supabase (PostgreSQL) database to securely capture the lead data (email, company, role) alongside the audit results. Implemented a hidden "Honeypot" input field for lightweight, frictionless bot protection.
+5.  **Viral Loop & Shareable URLs (MVP 6):** Configured the Supabase table to generate secure UUIDs on insert. Refactored React Router to support dynamic routes (`/dashboard/:id`) that fetch public audit data directly from the database when accessed via a shared link (e.g., an Incognito window).
+
+**What I learned:** I ran headfirst into a bleeding-edge bug: Tailwind CSS v4's new `oklch` color format completely breaks older canvas libraries like `html2canvas`. I had to pivot and swap the library for `html-to-image`, which utilizes the browser's native rendering engine and bypasses the CSS parsing issue entirely. I also deepened my knowledge of Supabase by writing raw SQL to establish the table schema and Row Level Security (RLS) policies.
+
+**Blockers / what I'm stuck on:** The core application is practically complete. The only missing pieces are the automated email trigger and the meta tags for link previews. 
+
+**Plan for tomorrow:** - Integrate Resend API to fire off the transactional confirmation email when a lead is captured.
+- Inject dynamic Open Graph (OG) tags and Twitter Cards into the `index.html` for clean social sharing previews.
+- Complete the final required documentation (`ARCHITECTURE.md`, `GTM.md`, and `ECONOMICS.md`) and polish the UI for final submission.
+
+## Day 3 (2026-05-11)
+
+**Hours worked:** 5
+
+**What I did:** Massive day focused on backend integration, API wiring, and "wow factor" features. 
+1.  **PDF Export (Bonus Feature):** Engineered a client-side PDF export for the Results Dashboard using `html-to-image` and `jspdf`.
+2.  **Persistence (MVP 1):** Implemented `localStorage` syncing so the user's stack data survives page reloads.
+3.  **AI Summary (MVP 4):** Integrated the Groq API (LLaMA 3 8B) to generate a personalized executive summary of the wasted spend. Wrote strict fallback logic to render a templated summary if the API times out or rate-limits, ensuring 100% UI uptime. Documented the system prompt in `PROMPTS.md`.
+4.  **Lead Capture & Backend (MVP 5):** Replaced the instant-audit button with an "Email Gate" modal. Spun up a Supabase (PostgreSQL) database to securely capture the lead data (email, company, role) alongside the audit results. Implemented a hidden "Honeypot" input field for lightweight, frictionless bot protection.
+5.  **Viral Loop & Shareable URLs (MVP 6):** Configured the Supabase table to generate secure UUIDs on insert. Refactored React Router to support dynamic routes (`/dashboard/:id`) that fetch public audit data directly from the database when accessed via a shared link (e.g., an Incognito window).
+
+**What I learned:** I ran headfirst into a bleeding-edge bug: Tailwind CSS v4's new `oklch` color format completely breaks older canvas libraries like `html2canvas`. I had to pivot and swap the library for `html-to-image`, which utilizes the browser's native rendering engine and bypasses the CSS parsing issue entirely. I also deepened my knowledge of Supabase by writing raw SQL to establish the table schema and Row Level Security (RLS) policies.
+
+**Blockers / what I'm stuck on:** The core application is practically complete. The only missing pieces are the automated email trigger and the meta tags for link previews. 
+
+**Plan for tomorrow:** - Integrate Resend API to fire off the transactional confirmation email when a lead is captured.
+- Inject dynamic Open Graph (OG) tags and Twitter Cards into the `index.html` for clean social sharing previews.
+- Complete the final required documentation (`ARCHITECTURE.md`, `GTM.md`, and `ECONOMICS.md`) and polish the UI for final submission.

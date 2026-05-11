@@ -37,7 +37,7 @@ function App() {
             } />
 
            
-            <Route path="/dashboard" element={<ResultsDashboard />} />
+            <Route path="/dashboard/:id" element={<ResultsDashboard />} />
           </Routes>
         </main>
 
