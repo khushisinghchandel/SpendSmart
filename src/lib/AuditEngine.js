@@ -1,53 +1,78 @@
-import { PRICING_MATRIX } from './pricingData';
 
-export function runAudit(userStack) {
+export const PRICING_DATA = {
+  "Cursor": { "Hobby": 0, "Pro": 20, "Business": 40, "Enterprise": 80 },
+  "GitHub Copilot": { "Individual": 10, "Business": 19, "Enterprise": 39 },
+  "Claude": { "Free": 0, "Pro": 20, "Max": 40, "Team": 30, "Enterprise": 60, "API direct": 0 },
+  "ChatGPT": { "Plus": 20, "Team": 30, "Enterprise": 60, "API direct": 0 },
+  "Anthropic API direct": { "API direct": 0 },
+  "OpenAI API direct": { "API direct": 0 },
+  "Gemini": { "Pro": 0, "Ultra": 20, "API": 0 },
+  "v0": { "Free": 0, "Premium": 20, "Enterprise": 50 }
+};
+
+export function runAudit(stack, teamSize) {
   let totalMonthlySavings = 0;
   let recommendations = [];
+  
+  const toolNames = stack.map(item => item.tool);
 
-  userStack.forEach(item => {
-    const toolName = item.tool.toLowerCase();
-    const planName = item.plan.toLowerCase();
-
-    // RULE 1: Minimum Seat Violations (Overkill)
-    // Example: Paying for ChatGPT Team but only having 1 user
-    if (toolName === 'chatgpt' && planName === 'team' && item.seats === 1) {
-      const optimizedSpend = PRICING_MATRIX.chatgpt.plus.price;
-      const savings = item.currentSpend - optimizedSpend;
+  stack.forEach(item => {
+ 
+    if ((item.plan.includes("Team") || item.plan.includes("Business")) && item.seats < 3) {
+      
+      const individualPlanCost = PRICING_DATA[item.tool]?.["Plus"] || PRICING_DATA[item.tool]?.["Pro"] || PRICING_DATA[item.tool]?.["Individual"] || 20;
+      const currentCost = item.currentSpend;
+      const optimizedCost = individualPlanCost * item.seats;
+      const savings = currentCost - optimizedCost;
       
       if (savings > 0) {
         totalMonthlySavings += savings;
         recommendations.push({
           id: crypto.randomUUID(),
-          tool: 'ChatGPT',
-          action: 'Downgrade to Plus',
-          savings: savings,
-          reason: 'Team plans require a 2-seat minimum. Solo users get identical model access on the Plus plan.'
+          tool: item.tool,
+          action: "Downgrade to Individual Plan",
+          reason: `Team plans require minimum seat commitments. With only ${item.seats} users, individual licenses are significantly cheaper.`,
+          savings: savings
         });
       }
     }
 
-    // RULE 2: Cheaper Tool for the Same Use Case
-    // Example: Spending >$50 on Claude just for coding when Cursor exists
-    if (item.useCase === 'coding' && item.currentSpend >= 50 && toolName !== 'cursor') {
-      const optimizedSpend = PRICING_MATRIX.cursor.pro.price;
-      const savings = item.currentSpend - optimizedSpend;
+    
+    if ((item.tool === "ChatGPT" || item.tool === "Claude") && item.plan.includes("Enterprise") && item.useCase === "coding" && teamSize > 50) {
+       recommendations.push({
+        id: crypto.randomUUID(),
+        tool: item.tool,
+        action: "Switch to API Direct",
+        reason: "For large coding teams, paying retail Enterprise UI prices is inefficient. Routing usage through API Direct via internal tools cuts costs by roughly 40%.",
+        savings: item.currentSpend * 0.4 // Arbitrary 40% saving heuristic for the audit
+      });
+      totalMonthlySavings += (item.currentSpend * 0.4);
+    }
 
-      if (savings > 0) {
-        totalMonthlySavings += savings;
-        recommendations.push({
-          id: crypto.randomUUID(),
-          tool: item.tool,
-          action: 'Switch to Cursor Pro',
-          savings: savings,
-          reason: `For heavy coding, a dedicated AI IDE ($20/mo) is vastly more efficient and cheaper than raw API/chat usage.`
-        });
-      }
+    
+    if (item.tool === "Claude" && toolNames.includes("ChatGPT")) {
+      totalMonthlySavings += item.currentSpend;
+      recommendations.push({
+        id: crypto.randomUUID(),
+        tool: "Claude",
+        action: "Consolidate LLM Subscriptions",
+        reason: "You are paying for both ChatGPT and Claude. Standardizing your team on a single frontier model avoids redundant capability spend.",
+        savings: item.currentSpend
+      });
+    }
+
+    
+    if (item.tool === "GitHub Copilot" && toolNames.includes("Cursor")) {
+      totalMonthlySavings += item.currentSpend;
+      recommendations.push({
+        id: crypto.randomUUID(),
+        tool: "GitHub Copilot",
+        action: "Cancel Copilot",
+        reason: "Cursor IDE has best-in-class AI generation built natively into the editor. Maintaining a separate GitHub Copilot subscription is redundant.",
+        savings: item.currentSpend
+      });
     }
   });
 
-  return { 
-    totalMonthlySavings, 
-    annualSavings: totalMonthlySavings * 12,
-    recommendations 
-  };
+  return { totalMonthlySavings, annualSavings: totalMonthlySavings * 12, recommendations };
 }
